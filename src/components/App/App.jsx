@@ -11,51 +11,72 @@ export default class App extends Component {
     gallery: [],
     searchValue: '',
     page: 1,
+    isLoading: false,
+    totalImgs: 0,
+    status: 'idle',
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.page === prevState.page && prevState.searchValue === '') {
-      this.setState(s => ({ page: s.page + 1 }));
-    }
-  }
-
   handleSubmit = async values => {
-    const { page } = this.state;
-    console.log(page);
-
     try {
-      const res = await API.searchImgs(values.search, API_KEY, page);
+      this.setState({ isLoading: true, status: 'pending' });
+      const res = await API.searchImgs(values.search, API_KEY, 1);
+      if (res.totalHits === 0) {
+        return this.setState({
+          searchValue: values.search,
+          status: 'rejected',
+        });
+      }
       this.setState({
         gallery: [...res.hits],
         searchValue: values.search,
-        page: 1,
+        page: 2,
+        isLoading: false,
+        totalImgs: res.totalHits,
+        status: 'resolved',
       });
     } catch (error) {
+      this.setState({
+        searchValue: values.search,
+        status: 'rejected',
+      });
       console.log(error);
     }
   };
 
   onLoadMore = async () => {
     const { gallery, searchValue, page } = this.state;
-    console.log(page);
     try {
       const res = await API.searchImgs(searchValue, API_KEY, page);
-      this.setState({ gallery: [...gallery, ...res.hits], page: page + 1 });
+      this.setState({
+        gallery: [...gallery, ...res.hits],
+        page: page + 1,
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
+  onLoading = e => {
+    this.setState({ isLoading: e });
+  };
+
   render() {
-    const { gallery } = this.state;
+    const { gallery, searchValue, isLoading, totalImgs, status } = this.state;
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery items={gallery} />
-        {gallery.length !== 0 ? (
+        <ImageGallery
+          items={gallery}
+          status={status}
+          searchValue={searchValue}
+        />
+        {gallery.length !== 0 &&
+        totalImgs > 12 &&
+        !isLoading &&
+        gallery.length % 2 === 0 ? (
           <Button onClick={this.onLoadMore} />
         ) : (
-          <p>Please enter your request</p>
+          <div></div>
         )}
       </div>
     );
