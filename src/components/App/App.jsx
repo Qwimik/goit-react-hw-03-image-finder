@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import Searchbar from 'components/Searchbar';
 import ImageGallery from 'components/ImageGallery';
 import { Component } from 'react';
@@ -82,3 +84,19 @@ export default class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  gallery: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      webformatURL: PropTypes.string.isRequired,
+      largeImageURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+    })
+  ),
+  searchValue: PropTypes.string,
+  page: PropTypes.number,
+  isLoading: PropTypes.bool,
+  totalImgs: PropTypes.number,
+  status: PropTypes.string,
+};
