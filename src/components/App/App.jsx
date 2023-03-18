@@ -13,14 +13,13 @@ export default class App extends Component {
     gallery: [],
     searchValue: '',
     page: 1,
-    isLoading: false,
     totalImgs: 0,
     status: 'idle',
   };
 
   handleSubmit = async values => {
     try {
-      this.setState({ isLoading: true, status: 'pending' });
+      this.setState({ status: 'pending' });
       const res = await API.searchImgs(values.search, API_KEY, 1);
       if (res.totalHits === 0) {
         return this.setState({
@@ -32,7 +31,6 @@ export default class App extends Component {
         gallery: [...res.hits],
         searchValue: values.search,
         page: 2,
-        isLoading: false,
         totalImgs: res.totalHits,
         status: 'resolved',
       });
@@ -48,22 +46,20 @@ export default class App extends Component {
   onLoadMore = async () => {
     const { gallery, searchValue, page } = this.state;
     try {
+      this.setState({ status: 'pending' });
       const res = await API.searchImgs(searchValue, API_KEY, page);
       this.setState({
         gallery: [...gallery, ...res.hits],
         page: page + 1,
+        status: 'resolved',
       });
     } catch (error) {
       console.log(error);
     }
   };
 
-  onLoading = e => {
-    this.setState({ isLoading: e });
-  };
-
   render() {
-    const { gallery, searchValue, isLoading, totalImgs, status } = this.state;
+    const { gallery, searchValue, totalImgs, status } = this.state;
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSubmit} />
@@ -72,13 +68,8 @@ export default class App extends Component {
           status={status}
           searchValue={searchValue}
         />
-        {gallery.length !== 0 &&
-        totalImgs > 12 &&
-        !isLoading &&
-        gallery.length % 2 === 0 ? (
+        {gallery.length !== 0 && totalImgs > 12 && gallery.length % 2 === 0 && (
           <Button onClick={this.onLoadMore} />
-        ) : (
-          <div></div>
         )}
       </div>
     );
@@ -96,7 +87,6 @@ App.propTypes = {
   ),
   searchValue: PropTypes.string,
   page: PropTypes.number,
-  isLoading: PropTypes.bool,
   totalImgs: PropTypes.number,
   status: PropTypes.string,
 };
