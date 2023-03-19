@@ -17,28 +17,26 @@ const ImageGallery = ({ items, searchValue, status }) => {
   }
 
   //'resolved'
-  if (status === 'resolved' || status === 'pending') {
-    return (
-      <>
-        <ul className="ImageGallery">
-          {items.map(item => (
-            <ImageGalleryItem item={item} key={item.id} />
-          ))}
-        </ul>
-        {status === 'pending' && (
-          <div className="loading">
-            <RotatingLines
-              strokeColor="grey"
-              strokeWidth="3"
-              animationDuration="0.75"
-              width="36"
-              visible={true}
-            />
-          </div>
-        )}
-      </>
-    );
-  }
+  return (
+    <>
+      <ul className="ImageGallery">
+        {items.map(item => (
+          <ImageGalleryItem item={item} key={item.id} />
+        ))}
+      </ul>
+      {status === 'pending' && (
+        <div className="loading">
+          <RotatingLines
+            strokeColor="grey"
+            strokeWidth="3"
+            animationDuration="0.75"
+            width="36"
+            visible={true}
+          />
+        </div>
+      )}
+    </>
+  );
 };
 
 export default ImageGallery;

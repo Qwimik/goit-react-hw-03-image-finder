@@ -17,9 +17,9 @@ export default class App extends Component {
     status: 'idle',
   };
 
-  handleSubmit = async values => {
+  onSubmit = async values => {
     try {
-      this.setState({ status: 'pending' });
+      this.setState({ status: 'pending', gallery: [] });
       const res = await API.searchImgs(values.search, API_KEY, 1);
       if (res.totalHits === 0) {
         return this.setState({
@@ -62,14 +62,16 @@ export default class App extends Component {
     const { gallery, searchValue, totalImgs, status } = this.state;
     return (
       <div className="App">
-        <Searchbar onSubmit={this.handleSubmit} />
+        <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery
           items={gallery}
           status={status}
           searchValue={searchValue}
         />
         {gallery.length !== 0 && totalImgs > 12 && gallery.length % 2 === 0 && (
-          <Button onClick={this.onLoadMore} />
+          <Button onClick={this.onLoadMore} classname={'Button'}>
+            Load more
+          </Button>
         )}
       </div>
     );
