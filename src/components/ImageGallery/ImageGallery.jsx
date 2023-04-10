@@ -1,22 +1,7 @@
+import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem';
-import { RotatingLines } from 'react-loader-spinner';
 
-const ImageGallery = ({ items, searchValue, status }) => {
-  //'idle'
-  if (status === 'idle') {
-    return <p className="start-text">Please enter your request :)</p>;
-  }
-
-  //'rejected'
-  if (status === 'rejected') {
-    return (
-      <p className="start-text">
-        Sorry, no result at your request "{searchValue}" :(
-      </p>
-    );
-  }
-
-  //'resolved'
+const ImageGallery = ({ items }) => {
   return (
     <>
       <ul className="ImageGallery">
@@ -24,19 +9,12 @@ const ImageGallery = ({ items, searchValue, status }) => {
           <ImageGalleryItem item={item} key={item.id} />
         ))}
       </ul>
-      {status === 'pending' && (
-        <div className="loading">
-          <RotatingLines
-            strokeColor="grey"
-            strokeWidth="3"
-            animationDuration="0.75"
-            width="36"
-            visible={true}
-          />
-        </div>
-      )}
     </>
   );
 };
 
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  items: PropTypes.array,
+};
