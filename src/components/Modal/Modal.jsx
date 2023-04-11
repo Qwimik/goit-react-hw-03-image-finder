@@ -10,12 +10,14 @@ export default class Modal extends Component {
     document
       .querySelector('.Overlay')
       .addEventListener('click', this.onBackdropClick);
+    document.querySelector('html').style.overflow = 'hidden';
   }
   componentWillUnmount() {
     window.removeEventListener('keydown', this.onKeyDown);
     document
       .querySelector('.Overlay')
       .removeEventListener('click', this.onBackdropClick);
+    document.querySelector('html').style.overflow = 'visible';
   }
 
   onKeyDown = e => {
@@ -40,5 +42,6 @@ export default class Modal extends Component {
 }
 
 Modal.propTypes = {
-  onClose: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };

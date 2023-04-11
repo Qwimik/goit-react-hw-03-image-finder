@@ -19,7 +19,7 @@ class ImageGalleryItem extends Component {
     const { item } = this.props;
 
     return (
-      <li key={item.id} className="ImageGalleryItem" onClick={this.openModal}>
+      <li className="ImageGalleryItem" onClick={this.openModal}>
         <img
           src={item.webformatURL}
           alt={item.tags}
@@ -38,5 +38,9 @@ class ImageGalleryItem extends Component {
 export default ImageGalleryItem;
 
 ImageGalleryItem.propTypes = {
-  item: PropTypes.object,
+  item: PropTypes.shape({
+    webformatURL: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+  }).isRequired,
 };
